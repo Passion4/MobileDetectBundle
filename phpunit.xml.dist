@@ -1,33 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false"
-         stopOnError="false"
-         stopOnIncomplete="false"
-         stopOnSkipped="false"
-         syntaxCheck="false"
-         bootstrap="tests/bootstrap.php"
-    >
-    <testsuites>
-        <testsuite name="MobileDetectBundle Test Suite">
-            <directory>Tests</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">./</directory>
-            <exclude>
-                <directory>./src/Resources</directory>
-                <directory>./Tests</directory>
-                <directory>./vendor</directory>
-                <file>./tests/bootstrap.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false" stopOnFailure="false" stopOnError="false" stopOnIncomplete="false" stopOnSkipped="false" bootstrap="tests/bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage>
+    <include>
+      <directory suffix=".php">./</directory>
+    </include>
+    <exclude>
+      <directory>./src/Resources</directory>
+      <directory>./tests</directory>
+      <directory>./vendor</directory>
+      <file>./tests/bootstrap.php</file>
+    </exclude>
+  </coverage>
+  <testsuites>
+    <testsuite name="MobileDetectBundle Test Suite">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
 </phpunit>

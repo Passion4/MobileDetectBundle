@@ -8,6 +8,7 @@ use PHPUnit_Framework_MockObject_MockObject;
 use SunCat\MobileDetectBundle\Helper\DeviceView;
 use SunCat\MobileDetectBundle\Twig\Extension\MobileDetectExtension;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Twig\TwigFunction;
 
 /**
  * DeviceView Test
@@ -55,7 +56,7 @@ class MobileDetectExtensionTest extends TestCase
         $this->request->cookies = new ParameterBag();
 
         $this->requestStack->expects($this->any())
-            ->method('getMasterRequest')
+            ->method('getMainRequest')
             ->will($this->returnValue($this->request))
         ;
 
@@ -89,7 +90,7 @@ class MobileDetectExtensionTest extends TestCase
             'device_version' => 'deviceVersion'
         ];
         foreach ($functions as $function) {
-            $this->assertInstanceOf('\Twig_SimpleFunction', $function);
+            $this->assertInstanceOf(TwigFunction::class, $function);
             $name = $function->getName();
             $callable = $function->getCallable();
             $this->assertArrayHasKey($name, $names);

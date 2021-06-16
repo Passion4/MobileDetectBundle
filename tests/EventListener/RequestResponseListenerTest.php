@@ -77,7 +77,7 @@ class RequestResponseListenerTest extends TestCase
 
         $this->requestStack = $this->getMockBuilder('Symfony\Component\HttpFoundation\RequestStack')->disableOriginalConstructor()->getMock();
         $this->requestStack->expects($this->any())
-            ->method('getMasterRequest')
+            ->method('getMainRequest')
             ->will($this->returnValue($this->request))
         ;
 
@@ -93,6 +93,7 @@ class RequestResponseListenerTest extends TestCase
      */
     public function handleRequestHasSwitchParam()
     {
+        $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/'));
         $this->request->query = new ParameterBag(array('myparam'=>'myvalue',$this->switchParam => DeviceView::VIEW_MOBILE));
         $deviceView = new DeviceView($this->requestStack);
         $deviceView->setRedirectConfig([DeviceView::VIEW_MOBILE => ['status_code' => 302]]);
@@ -126,6 +127,7 @@ class RequestResponseListenerTest extends TestCase
 
         $this->request->query = new ParameterBag(array('myparam'=>'myvalue',$this->switchParam => DeviceView::VIEW_MOBILE));
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/'));
+        $this->request->expects($this->any())->method('get')->with('_route')->will($this->returnValue(''));
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
@@ -239,6 +241,7 @@ class RequestResponseListenerTest extends TestCase
 
         $this->request->query = new ParameterBag(array('some'=>'param'));
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->with('_route')->will($this->returnValue(''));
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
@@ -289,6 +292,7 @@ class RequestResponseListenerTest extends TestCase
 
         $this->request->query = new ParameterBag(array('some'=>'param'));
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->with('_route')->will($this->returnValue(''));
         $this->router->expects($this->exactly(2))->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
@@ -379,6 +383,7 @@ class RequestResponseListenerTest extends TestCase
         $this->config['detect_tablet_as_mobile'] = true;
 
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->with('_route')->will($this->returnValue(''));
         $this->router->expects($this->atLeastOnce())->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
@@ -426,6 +431,7 @@ class RequestResponseListenerTest extends TestCase
         $this->config['tablet'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 302);
 
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->with('_route')->will($this->returnValue(''));
         $this->router->expects($this->atLeastOnce())->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT_WITHOUT_PATH, 2)
@@ -474,6 +480,7 @@ class RequestResponseListenerTest extends TestCase
         $this->config['tablet'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 302);
 
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->with('_route')->will($this->returnValue(''));
         $this->router->expects($this->atLeastOnce())->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::NO_REDIRECT, 1)
@@ -522,6 +529,7 @@ class RequestResponseListenerTest extends TestCase
         $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 302);
 
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->with('_route')->will($this->returnValue(''));
         $this->router->expects($this->atLeastOnce())->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT, 2)
@@ -570,6 +578,7 @@ class RequestResponseListenerTest extends TestCase
         $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 302);
 
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->with('_route')->will($this->returnValue(''));
         $this->router->expects($this->atLeastOnce())->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::REDIRECT_WITHOUT_PATH, 2)
@@ -618,6 +627,7 @@ class RequestResponseListenerTest extends TestCase
         $this->config['mobile'] = array('is_enabled' => true, 'host' => 'http://testsite.com', 'status_code' => 123);
 
         $this->request->expects($this->any())->method('getPathInfo')->will($this->returnValue('/some/parameters'));
+        $this->request->expects($this->any())->method('get')->with('_route')->will($this->returnValue(''));
         $this->router->expects($this->atLeastOnce())->method('getRouteCollection')->will(
             $this->returnValue(
                 $this->createRouteCollectionWithRouteAndRoutingOption(RequestResponseListener::NO_REDIRECT, 1)
@@ -665,6 +675,7 @@ class RequestResponseListenerTest extends TestCase
     public function handleRequestUpdatedMobileDetectorUserAgent()
     {
         $this->mobileDetector->expects($this->once())->method('setUserAgent')->with($this->equalTo('agent'));
+        $this->deviceView->expects($this->any())->method('getViewType')->willReturn(DeviceView::VIEW_MOBILE);
 
         $event = $this->createGetResponseEvent('some content');
         $event->getRequest()->headers->set('user-agent', 'agent');
@@ -705,7 +716,7 @@ class RequestResponseListenerTest extends TestCase
         $event = new ViewEvent(
             $this->createMock('Symfony\Component\HttpKernel\HttpKernelInterface'),
             $this->request,
-            HttpKernelInterface::MASTER_REQUEST,
+            HttpKernelInterface::MAIN_REQUEST,
             $content
         );
         $event->getRequest()->headers = new HeaderBag($headers);
@@ -727,7 +738,7 @@ class RequestResponseListenerTest extends TestCase
         $event = new ResponseEvent(
             $this->createMock('Symfony\Component\HttpKernel\HttpKernelInterface'),
             $this->request,
-            HttpKernelInterface::MASTER_REQUEST,
+            HttpKernelInterface::MAIN_REQUEST,
             $response
         );
         $event->getRequest()->headers = new HeaderBag($headers);
